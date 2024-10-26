@@ -1,0 +1,57 @@
+#サービスリストの
+services:
+  #apiサーバーのコンテナを定義
+  api_server:
+    #コンテナの名前
+    container_name: api_server
+    #ビルド
+    build:
+      #認識する範囲
+      context: .
+      #このコンテナをビルドするときに使用するdockerファイル
+      dockerfile: ./Dockerfile
+    #ポート番号(ホスト側:コンテナ側)を指定する
+    ports:
+      - "5000:8080"
+    volumes:
+      - .:/app
+    tty: true
+
+  #mysqlのコンテナを定義
+  mysql:
+    #コンテナの名前
+    container_name: mysql
+    #ポート番号(ホスト側:コンテナ側)を指定する
+    ports:
+      - 3306:3306
+    #下記のコンテナイメージをダウンロードして仕様します
+    image: mysql:5.7
+    #環境変数を指定する
+    environment:
+      #データベース名
+      MYSQL_DATABASE: art_one
+      #データベースのルートパスワード
+      MYSQL_ROOT_PASSWORD: password
+
+  #mysqladminのコンテナを定義
+  phpmyadmin:
+    #コンテナの名前
+    container_name: phpmyadmin
+    #下記のコンテナイメージをダウンロードして仕様します
+    image: phpmyadmin/phpmyadmin
+    #環境変数を指定する
+    environment:
+      - PMA_ARBITRARY=1
+      #"mysql"はmysqlのIPアドレスに置き換わる
+      - PMA_HOST=mysql
+      #
+      - PMA_USER=root
+      #MYSQL_ROOT_PASSWORDと同じ値にする事
+      - PMA_PASSWORD=password
+    links:
+      - mysql
+    #ポート番号(ホスト側:コンテナ側)を指定する
+    ports:
+      - 8080:80
+    volumes:
+      - /sessions
