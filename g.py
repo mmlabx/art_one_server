@@ -4,7 +4,6 @@ import os
 import datetime
 import config
 
-
 #デバッグ関連--------------------------------------------------
 def isDebug():
     #環境変数にデバッグモードが設定されていれば
